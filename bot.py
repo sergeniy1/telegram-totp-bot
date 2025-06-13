@@ -3,7 +3,6 @@ import os
 import telebot
 import pyotp
 import json
-import base64
 from cryptography.fernet import Fernet
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -12,6 +11,10 @@ load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
 ALLOWED_USER_ID = os.getenv("ALLOWED_USER_ID")
+if not TOKEN:
+    raise Exception("\u274c \u0412 .env \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c TELEGRAM_TOKEN")
+if not ALLOWED_USER_ID:
+    raise Exception("\u274c \u0412 .env \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c ALLOWED_USER_ID")
 DATA_FILE = "totp_data.json"
 
 if not ENCRYPTION_KEY:
