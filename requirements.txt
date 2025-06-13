@@ -1,4 +1,4 @@
+pyTelegramBotAPI
 pyotp
-pytelegrambotapi
-python-dotenv
 cryptography
+python-dotenv
