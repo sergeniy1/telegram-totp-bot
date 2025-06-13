@@ -10,15 +10,11 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
-ALLOWED_USER_IDS = [
-    uid.strip() for uid in os.getenv("ALLOWED_USER_IDS", "").split(",") if uid.strip()
-]
+ALLOWED_USER_ID = os.getenv("ALLOWED_USER_ID")
 if not TOKEN:
     raise Exception("\u274c \u0412 .env \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c TELEGRAM_TOKEN")
-if not ALLOWED_USER_IDS:
-    raise Exception(
-        "\u274c \u0412 .env \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c ALLOWED_USER_IDS"
-    )
+if not ALLOWED_USER_ID:
+    raise Exception("\u274c \u0412 .env \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c ALLOWED_USER_ID")
 DATA_FILE = "totp_data.json"
 
 if not ENCRYPTION_KEY:
@@ -46,7 +42,7 @@ def save_data():
 # \u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0430\u0432\u0442\u043e\u0440\u0438\u0437\u0430\u0446\u0438\u0438 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f
 
 def is_authorized(message):
-    return str(message.chat.id) in ALLOWED_USER_IDS
+    return str(message.chat.id) == str(ALLOWED_USER_ID)
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -100,7 +96,7 @@ def list_keys(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("get_"))
 def send_code(call):
-    if str(call.message.chat.id) not in ALLOWED_USER_IDS:
+    if str(call.message.chat.id) != str(ALLOWED_USER_ID):
         return
     chat_id = str(call.message.chat.id)
     index = int(call.data.split("_")[1])
@@ -132,7 +128,7 @@ def delete_key(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("del_"))
 def confirm_delete(call):
-    if str(call.message.chat.id) not in ALLOWED_USER_IDS:
+    if str(call.message.chat.id) != str(ALLOWED_USER_ID):
         return
     chat_id = str(call.message.chat.id)
     index = int(call.data.split("_")[1])
